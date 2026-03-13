@@ -25,7 +25,7 @@
    - โคลน Repository นี้ หรืออัปโหลดไฟล์ทั้งหมดขึ้น Shared Hosting (โฟลเดอร์ `public_html` หรือ Sub-folder ที่ต้องการ)
 
 2. **ตั้งค่าฐานข้อมูล**
-   - นำไฟล์ `database.sql` ไป Import ลงใน MySQL ผ่าน phpMyAdmin
+   - สร้าง Database ใหม่ และนำไฟล์ `database.sql` ไป Import ลงใน MySQL ผ่าน phpMyAdmin
 
 3. **ตั้งค่าการเชื่อมต่อ**
    - คัดลอกไฟล์ `config.sample.php` และเปลี่ยนชื่อเป็น `config.php`
@@ -37,15 +37,19 @@
      $pass = 'YOUR_DB_PASSWORD';
      ```
 
-4. **การเข้าสู่ระบบครั้งแรก**
-   - รันสคริปต์ `reset_pass.php` (ที่เคยสร้างไว้) 1 ครั้งผ่าน Browser เพื่อตั้งค่ารหัสผ่านใหม่ให้กับ User: `admin`
-   - ลบไฟล์ `reset_pass.php` ทิ้งทันทีเมื่อตั้งรหัสผ่านเสร็จสิ้น
-   - เข้าสู่ระบบผ่าน `login.php`
+4. **การเข้าสู่ระบบครั้งแรก (Default Credentials)**
+   - เข้าสู่ระบบผ่านหน้าเว็บ (ไฟล์ `login.php`) ด้วยบัญชีผู้ดูแลระบบเริ่มต้น:
+     - **Username:** `admin`
+     - **Password:** `password`
+   - ⚠️ **สำคัญมาก:** เมื่อเข้าสู่ระบบได้แล้ว ให้คลิกที่เมนู "บัญชีของฉัน > เปลี่ยนรหัสผ่าน" ที่มุมขวาบน เพื่อตั้งค่ารหัสผ่านใหม่ทันทีเพื่อความปลอดภัย
 
 ## 🛡️ ความปลอดภัยและข้อควรระวัง (Security Notes)
-- ห้ามอัปโหลดไฟล์ `config.php` ขึ้น Public Repository เด็ดขาด (กำหนดไว้ใน `.gitignore` แล้ว)
+- ห้ามอัปโหลดไฟล์ `config.php` ขึ้น Public Repository เด็ดขาด (กำหนดเงื่อนไขไว้ใน `.gitignore` แล้ว)
 - ระบบใช้ไฟล์ `.htaccess` ในการป้องกัน Directory Listing และสกัดกั้นการเข้าถึงไฟล์ Configuration ขอให้ตรวจสอบว่า Apache บน Server เปิดให้ Override กฎเหล่านี้แล้ว
 - การ Query ทั้งหมดใช้ Prepared Statements (PDO) เพื่อป้องกัน SQL Injection
+
+## 📄 License
+โปรเจกต์นี้เผยแพร่ภายใต้ [MIT License](LICENSE) อนุญาตให้นำไปใช้งาน ดัดแปลง และพัฒนาต่อยอดได้อย่างอิสระ
 
 ## 👨‍💻 ผู้พัฒนา
 **นายสุทธิชัย ชมชื่น** นักวิชาการคอมพิวเตอร์ชำนาญการ  
