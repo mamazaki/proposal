@@ -1,0 +1,57 @@
+# ----------------------------------------------------------------------
+# 1. ความปลอดภัยพื้นฐาน (Security)
+# ----------------------------------------------------------------------
+
+# ปิดการแสดงผลรายการไฟล์ในโฟลเดอร์ (Directory Listing) ป้องกันคนเข้ามาส่องไฟล์
+Options -Indexes
+
+# ป้องกันการเข้าถึงไฟล์สำคัญโดยตรง (Config, ไฟล์ซ่อนต่างๆ)
+<FilesMatch "^(config\.php|\.htaccess|\.git|\.env|database\.sql)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ----------------------------------------------------------------------
+# 2. บังคับใช้งาน HTTPS (Force SSL) - แบบรองรับ Reverse Proxy
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# 3. HTTP Security Headers (ป้องกันการโจมตีพื้นฐาน)
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+    # ป้องกัน Clickjacking (ไม่ให้เว็บอื่นดึงเว็บเราไปแสดงใน iframe)
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # ป้องกัน MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # เปิดใช้งาน XSS Filter ของ Browser
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # ไม่ส่งข้อมูล Referrer ไปยังเว็บอื่นที่ไม่ใช่ HTTPS (ช่วยรักษา Privacy)
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ----------------------------------------------------------------------
+# 4. จัดการ URL ให้สะอาด (ซ่อน .php) - Optional
+# ----------------------------------------------------------------------
+# ทำให้สามารถพิมพ์ URL เป็น /dashboard แทน /dashboard.php ได้ 
+# (ลิงก์เดิมที่เขียนแบบ .php ใน Navbar ก็ยังคงทำงานได้ปกติ)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}\.php -f
+    RewriteRule ^([^\.]+)/?$ $1.php [L]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# 5. บังคับ Charset และ Timezone ระดับ Server
+# ----------------------------------------------------------------------
+AddDefaultCharset UTF-8
+SetEnv TZ Asia/Bangkok
